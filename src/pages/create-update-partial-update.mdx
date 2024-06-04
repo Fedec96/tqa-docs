@@ -1,0 +1,132 @@
+import { Callout } from "nextra/components";
+
+# Create, update & partial update
+
+`useCreateUpdate` allows to perform `POST` (create), `PUT` (update) and `PATCH`
+(partial update) requests.
+
+To specify which type of request the hook will execute, you need to specify the
+query's nature. Doing so will tell TypeScript which method Axios will require.
+
+## Usage
+
+```ts filename="TypeScript"
+import { useCreateUpdate } from "tqa/hooks/crud";
+
+const mutation = useCreateUpdate<Req, Res, Data, Params, Err>(url, opt, client);
+```
+
+## Examples
+
+### Create (`POST`)
+
+```tsx filename="TypeScript (TSX)"
+import { useCreateUpdate } from "tqa/hooks/crud";
+
+interface Res {
+  id: number;
+  title: string;
+  year: number;
+}
+
+type Data = Omit<Res, "id">;
+type Params = void;
+
+interface Err {
+  reason: string;
+}
+
+export const CreateBookButton = () => {
+  const create = useCreateUpdate<"create", Res, Data, Params, Err>(
+    "/api/book/",
+    {
+      reactQuery: { mutationKey: ["CREATE_BOOK"] },
+      axios: { method: "post" },
+    }
+  );
+
+  // ...
+};
+```
+
+### Update (`PUT`)
+
+```tsx filename="TypeScript (TSX)"
+import { useCreateUpdate } from "tqa/hooks/crud";
+
+interface Res {
+  id: number;
+  title: string;
+  year: number;
+}
+
+type Data = Omit<Res, "id">;
+type Params = void;
+
+interface Err {
+  reason: string;
+}
+
+export const UpdateBookButton = ({ id }: { id: number }) => {
+  const update = useCreateUpdate<"update", Res, Data, Params, Err>(
+    `/api/book/${id}`,
+    {
+      reactQuery: { mutationKey: ["UPDATE_BOOK", id] },
+      axios: { method: "put" },
+    }
+  );
+
+  // ...
+};
+```
+
+### Partial update (`PATCH`)
+
+```tsx filename="TypeScript (TSX)"
+import { useCreateUpdate } from "tqa/hooks/crud";
+
+interface Res {
+  id: number;
+  title: string;
+  year: number;
+}
+
+type Data = Omit<Res, "id">;
+type Params = void;
+
+interface Err {
+  reason: string;
+}
+
+export const UpdateBookButton = ({ id }: { id: number }) => {
+  const patch = useCreateUpdate<"partialUpdate", Res, Data, Params, Err>(
+    `/api/book/${id}`,
+    {
+      reactQuery: { mutationKey: ["PATCH_BOOK", id] },
+      axios: { method: "patch" },
+    }
+  );
+
+  // ...
+};
+```
+
+<Callout>
+  When using `partialUpdate`, the type you pass as `Data` will be recursively
+  marked as optional, to reflect `PATCH`'s expected behavior.
+  
+  Given the example above:
+
+  ```ts filename="TypeScript" copy=false
+  type Data = Omit<Res, "id">;
+  ```
+
+  Will be seen by the mutation function as:
+
+  ```ts filename="TypeScript" copy=false
+  interface Data {
+    title?: string;
+    year?: number;
+  }
+  ```
+</Callout>

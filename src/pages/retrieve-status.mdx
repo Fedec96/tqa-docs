@@ -1,0 +1,80 @@
+# Retrieve & status
+
+`useRetrieve` allows to perform `GET` (retrieve) and `HEAD` (status) requests.
+
+To specify which type of request the hook will execute, you need to specify the
+query's nature. Doing so will tell TypeScript which method Axios will require.
+
+## Usage
+
+```ts filename="TypeScript"
+import { useRetrieve } from "tqa/hooks/crud";
+
+const query = useRetrieve<Req, Res, Params, Err>(url, opt, client);
+```
+
+## Examples
+
+### Retrieve (`GET`)
+
+```tsx filename="TypeScript (TSX)"
+import { useRetrieve } from "tqa/hooks/crud";
+
+interface Res {
+  id: number;
+  title: string;
+  year: number;
+}
+
+type Params = void;
+
+interface Err {
+  reason: string;
+}
+
+export const Book = ({ id }: { id: number }) => {
+  const book = useRetrieve<"retrieve", Res, Params, Err>(`/api/book/${id}`, {
+    reactQuery: { queryKey: ["GET_BOOK", id] },
+    axios: { method: "get" },
+  });
+
+  // ...
+};
+```
+
+### Status (`HEAD`)
+
+```tsx filename="TypeScript (TSX)"
+import { useRetrieve } from "tqa/hooks/crud";
+import { useState, useEffect } from "react";
+
+type Res = undefined;
+type Params = void;
+
+interface Err {
+  reason: string;
+}
+
+export const Order = ({ id }: { id: number }) => {
+  const [refetchInterval, setRefetchInterval] = useState<number | false>(1_000);
+
+  const query = useRetrieve<"status", Res, Params, Err>(`/api/order/${id}`, {
+    reactQuery: { queryKey: ["CHECK_ORDER", id], refetchInterval },
+    axios: { method: "head" },
+  });
+
+  useEffect(() => {
+    if (query.data?.response.status === 201 || query.error) {
+      setPolling(false);
+    }
+  }, [query.data?.response, query.error]);
+
+  // ...
+};
+```
+
+## Cancel requests
+
+```tsx filename="TypeScript"
+queryClient.cancelQueries({ queryKey: [/* ... */], exact: true });
+```

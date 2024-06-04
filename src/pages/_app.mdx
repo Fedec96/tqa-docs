@@ -1,0 +1,11 @@
+import "./globals.css";
+
+import { useRouter } from "next/router";
+
+export default function App(
+  /** @type {import("next/app").AppProps<{}>} */
+  { Component, pageProps }
+) {
+  const { asPath } = useRouter();
+  return <Component {...pageProps} key={asPath} />;
+}

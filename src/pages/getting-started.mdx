@@ -1,0 +1,45 @@
+# Getting started
+
+## Installation
+
+Inside your project directory, run the following:
+
+```bash filename="Terminal"
+npm install tqa
+```
+
+## Quick start
+
+TQA requires a default Axios instance as consumer, and requires to be wrapped
+by TanStack Query first. Create or import your consumer and feed it to TQA. See
+the basic example below using Next.js and App Router:
+
+```tsx filename="TypeScript (TSX)" {4,5,14,15,20,22}
+"use client";
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import axios from "axios";
+import { Consumer, ConsumerProvider } from "tqa";
+
+import type { ReactNode } from "react";
+
+export interface ProvidersProps {
+  children?: ReactNode;
+}
+
+const queryClient = new QueryClient();
+const http = axios.create();
+const consumer = new Consumer(http);
+
+export default function Providers({ children }: ProvidersProps) {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ConsumerProvider consumer={consumer}>
+        {children}
+      </ConsumerProvider>
+    </QueryClientProvider>
+  );
+}
+```
+
+All set! You're now ready to use TQA's hooks.

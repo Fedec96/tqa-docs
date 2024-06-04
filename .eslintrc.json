@@ -1,0 +1,21 @@
+{
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:@typescript-eslint/recommended-type-checked",
+    "plugin:@typescript-eslint/stylistic"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    "@typescript-eslint/no-floating-promises": "error",
+    "@typescript-eslint/no-unsafe-assignment": "warn",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { "ignoreRestSiblings": true }
+    ]
+  },
+  "ignorePatterns": ["next.config.*", "postcss.config.*", "tailwind.config.*"]
+}

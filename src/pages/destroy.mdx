@@ -1,0 +1,32 @@
+# Destroy
+
+`useDestroy` allows to perform `DELETE` (destroy) requests.
+
+## Usage
+
+```ts filename="TypeScript"
+import { useDestroy } from "tqa/hooks/crud";
+
+const mutation = useDestroy<Res, Params, Err>(url, opt, client);
+```
+
+## Example
+
+```tsx filename="TypeScript (TSX)"
+import { useDestroy } from "tqa/hooks/crud";
+
+type Res = string;
+type Params = void;
+
+interface Err {
+  reason: string;
+}
+
+export const DeleteBookButton = ({ id }: { id: number }) => {
+  const destroy = useDestroy<Res, Params, Err>(`/api/book/${id}`, {
+    reactQuery: { mutationKey: ["DESTROY_BOOK", id] },
+  });
+
+  // ...
+};
+```

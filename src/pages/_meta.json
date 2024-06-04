@@ -1,0 +1,25 @@
+{
+  "index": "Overview",
+  "getting-started": "Getting started",
+  "--- Hooks": {
+    "type": "separator",
+    "title": "Hooks"
+  },
+  "retrieve-status": "Retrieve & status",
+  "create-update-partial-update": "Create, update & partial update",
+  "destroy": "Destroy",
+  "alternative-hooks": "Alternative hooks",
+  "--- Advanced": {
+    "type": "separator",
+    "title": "Advanced"
+  },
+  "pagination": "Pagination",
+  "typescript": "TypeScript",
+  "consumer": "Consumer",
+  "404": {
+    "title": "404",
+    "type": "page",
+    "display": "hidden",
+    "theme": { "typesetting": "article", "timestamp": false }
+  }
+}

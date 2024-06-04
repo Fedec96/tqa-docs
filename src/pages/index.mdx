@@ -1,0 +1,98 @@
+# Overview
+
+**TQA** (creatively *TanStack + Query + Axios*) is a React hooks library that
+aims to standardize the (wait for it) TanStack Query & Axios implementation by
+offering prebuilt wrappers for the `GET`, `PUT`, `POST`, `PATCH` and `DELETE`
+requests.
+
+In a typical client application, it's common to perform HTTP requests to
+interact with a set of REST APIs, while also needing to access the response's
+status code and HTTP error's information - all of this with comprehensive
+TypeScript support. TQA's hooks will perform this work for you while allowing
+you to easily customize them.
+
+## Requirements
+
+### TanStack Query
+
+**Version 5+**
+
+Every single query or mutation performed by mean of TQA will require a key. This
+is an opinionated take that's been coded into the library as TanStack Query
+doesn't require it.
+
+Another thing to keep in mind is that the query and mutation functions won't be
+accepted as part of the hook's configuration, as they're completely handled by
+the hooks. The rest of the configuration will be completely customizable by
+the user.
+
+[TanStack Query documentation](https://tanstack.com/query/latest)
+
+### Axios
+
+**Version 1+**
+
+Every request will be performed with an Axios HTTP client. The client will be
+referenced as *consumer*, and will always require an endpoint - either a plain
+string or an `URL` instance.
+
+Unlike for TanStack Query, no default configuration is provided to Axios out of
+the box.
+
+[Axios documentation](https://axios-http.com/)
+
+## Features
+
+### Rich data
+
+Access more than the bare data when a response is returned:
+
+```ts filename="TypeScript"
+const {
+  data: { request, response, headers, status, statusText },
+  error
+} = useRetrieve(url, opt, client);
+
+if (error && "isAxiosError" in error) {
+  // ...
+}
+```
+
+### Strong type safety
+
+TQA was built with type safety in mind, ensuring you always know how to interact
+with your data. Each hook offers the ability to fully define your data:
+
+```ts filename="TypeScript"
+const query = useRetrieve<Req, Res, Params, Err>(url, opt, client);
+```
+
+### Request cancellation
+
+TanStack Query offers the ability to cancel pending queries by mean of its
+built-in `queryClient`, provided you pass your controller's signal to the
+query function. This work is already covered by TQA under the hood so that
+you only have to interact with `queryClient`:
+
+```ts filename="TypeScript" copy=false
+queryClient.cancelQueries({ queryKey: [/* ... */] });
+```
+
+This applies to all the `GET` and `HEAD` requests, excluding those that are
+performed with mutation-based hooks.
+
+### Pagination
+
+TQA supports two different pagination strategies: **infinite** and
+**directional**. Both approaches offer built-in support for `GET` and `POST`
+request methods and solutions to build and configure your own wrappers.
+
+[More on pagination](/pagination)
+
+### Immediate and on-demand mechanisms
+
+TQA provides an easy solution to fire `POST` requests as soon as your component
+mounts, just like a query would do, as well as the ability to fire `GET`
+requests on demand, with mutation-like dynamics.
+
+[More on alternative hooks](/alternative-hooks)

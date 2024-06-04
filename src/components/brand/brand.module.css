@@ -1,0 +1,16 @@
+.brand {
+  mask-image: linear-gradient(
+    60deg,
+    black 25%,
+    rgba(0, 0, 0, 0.5) 50%,
+    black 75%
+  );
+
+  mask-size: 400%;
+  mask-position: 0%;
+}
+
+.brand:hover {
+  mask-position: 100%;
+  transition: mask-position 750ms ease, -webkit-mask-position 750ms ease;
+}

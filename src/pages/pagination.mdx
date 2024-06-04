@@ -1,0 +1,22 @@
+import {
+  IconList,
+  IconArrowsLeftRight,
+  IconSettings,
+} from "@tabler/icons-react";
+
+import { Summary } from "@/components/summary";
+
+# Pagination
+
+<Summary
+  basePath="pagination"
+  anchorPath={[
+    { title: "Pagination setup", href: "pagination-setup", icon: IconSettings },
+    { title: "Infinite strategy", href: "infinite-strategy", icon: IconList },
+    {
+      title: "Directional strategy",
+      href: "directional-strategy",
+      icon: IconArrowsLeftRight,
+    },
+  ]}
+/>

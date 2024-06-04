@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    "DavidAnson.vscode-markdownlint",
+    "esbenp.prettier-vscode",
+    "formulahendry.auto-rename-tag",
+    "vscode-icons-team.vscode-icons",
+    "MylesMurphy.prettify-ts",
+    "NextNav.NextNav",
+    "meganrogge.template-string-converter",
+    "unifiedjs.vscode-mdx",
+    "dbaeumer.vscode-eslint"
+  ]
+}

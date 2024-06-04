@@ -1,4 +1,4 @@
 {
-  "immediate-post": "Immediate POST",
-  "retrieve-on-demand": "Retrieve on demand"
+  "immediate-post": "Query as POST",
+  "retrieve-on-demand": "GET on demand"
 }

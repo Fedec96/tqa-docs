@@ -1,1 +1,47 @@
 # Retrieval create
+
+`useRetrievalCreate` allows to perform `POST` requests with query-like dynamics.
+This means you can expect it behaving just like [`useRetrieve`](/retrieve-status)
+but specifically for `POST` requests with payload support.
+
+This hook is designed to accomodate back-ends that require you to query your
+data with `POST` rather than with `GET`.
+
+## Usage
+
+```ts filename="TypeScript"
+import { useRetrievalCreate } from "tqa/hooks/crud/alt";
+
+const query = useRetrievalCreate<Res, Data, Params, Err>(url, opt, client);
+```
+
+## Example
+
+```tsx filename="TypeScript (TSX)"
+import { useRetrievalCreate } from "tqa/hooks/crud/alt";
+
+interface Res {
+  id: number;
+  title: string;
+  year: number;
+}
+
+interface Data {
+  yearInterval: [number, number];
+}
+
+type Params = void;
+
+interface Err {
+  reason: string;
+}
+
+export const Book = ({ id }: { id: number }) => {
+  const book = useRetrievalCreate<Res, Data, Params, Err>(`/api/book/${id}`, {
+    reactQuery: { queryKey: ["GET_BOOK", id] },
+    axios: { data: { yearInterval: [2010, 2015] } },
+  });
+
+  // ...
+};
+```

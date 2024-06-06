@@ -5,9 +5,9 @@
     "type": "separator",
     "title": "Hooks"
   },
-  "retrieve-status": "GET & HEAD",
-  "create-update-partial-update": "POST, PUT & PATCH",
-  "destroy": "DELETE",
+  "retrieve-status": "Retrieve, status",
+  "create-update-partial-update": "Create, update, partial update",
+  "destroy": "Destroy",
   "alternative-hooks": "Alternative hooks",
   "--- Advanced": {
     "type": "separator",

@@ -1,6 +1,6 @@
 import { Callout } from "nextra/components";
 
-# Create, update & partial update
+# Create, update, partial update
 
 `useCreateUpdate` allows to perform `POST` (create), `PUT` (update) and `PATCH`
 (partial update) requests.
@@ -99,7 +99,7 @@ interface Err {
 }
 
 export const UpdateBookButton = ({ id }: { id: number }) => {
-  const patch = useCreateUpdate<"partialUpdate", Res, Data, Params, Err>(
+  const partial = useCreateUpdate<"partialUpdate", Res, Data, Params, Err>(
     `/api/book/${id}`,
     {
       reactQuery: { mutationKey: ["PATCH_BOOK", id] },

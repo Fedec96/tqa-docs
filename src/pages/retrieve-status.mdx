@@ -61,7 +61,7 @@ interface Err {
 export const Order = ({ id }: { id: number }) => {
   const [refetchInterval, setRefetchInterval] = useState<number | false>(1_000);
 
-  const query = useRetrieve<"status", Res, Params, Err>(`/api/order/${id}`, {
+  const order = useRetrieve<"status", Res, Params, Err>(`/api/order/${id}`, {
     reactQuery: { queryKey: ["CHECK_ORDER", id], refetchInterval },
     axios: { method: "head" },
   });

@@ -1,1 +1,72 @@
 # Creational retrieve
+
+`useCreationalRetrieve` allows to perform `GET` and `HEAD` requests with
+mutation dynamics. This means you can expect it behaving just like
+[`useCreateUpdate`](/create-update-partial-update) but specifically for `GET`
+and `HEAD` requests with no payload.
+
+This hook is designed to accomodate the need of firing your retrieval requests
+on demand (such as upon a click on a button).
+
+To specify which type of request the hook will execute, you need to specify the
+mutation's nature. Doing so will tell TypeScript which method Axios will
+require.
+
+## Usage
+
+```ts filename="TypeScript"
+import { useCreationalRetrieve } from "tqa/hooks/crud/alt";
+
+const mutation = useCreationalRetrieve<Req, Res, Params, Err>(url, opt, client);
+```
+
+## Examples
+
+### Retrieve (`GET`)
+
+```tsx filename="TypeScript (TSX)"
+import { useCreationalRetrieve } from "tqa/hooks/crud/alt";
+
+interface Res {
+  id: number;
+  title: string;
+  year: number;
+}
+
+type Params = void;
+
+interface Err {
+  reason: string;
+}
+
+export const Book = ({ id }: { id: number }) => {
+  const book = useCreationalRetrieve<"retrieve", Res, Params, Err>(`/api/book/${id}`, {
+    reactQuery: { queryKey: ["GET_BOOK", id] },
+    axios: { method: "get" },
+  });
+
+  // ...
+};
+```
+
+### Status (`HEAD`)
+
+```tsx filename="TypeScript (TSX)"
+import { useCreationalRetrieve } from "tqa/hooks/crud/alt";
+
+type Res = undefined;
+type Params = void;
+
+interface Err {
+  reason: string;
+}
+
+export const Order = ({ id }: { id: number }) => {
+  const order = useCreationalRetrieve<"status", Res, Params, Err>(`/api/order/${id}`, {
+    reactQuery: { queryKey: ["CHECK_ORDER", id] },
+    axios: { method: "head" },
+  });
+
+  // ...
+};
+```

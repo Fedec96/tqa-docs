@@ -12,12 +12,30 @@ require.
 To request with `POST` behaving like [`useRetrieve`](/retrieve-status), see
 [`useRetrievalCreate`](/alternative-hooks/retrieval-create).
 
-## Usage
+## Definition
 
-```ts filename="TypeScript"
+```ts filename="Import statement (TypeScript)"
 import { useCreateUpdate } from "tqa/hooks/crud";
+```
 
-useCreateUpdate<Req, Res, Data, Params, Err>(url, opt, client);
+```ts filename="Signature (TypeScript)"
+const useCreateUpdate: <
+  TRequest extends UseCreateUpdateRequest = never,
+  TResponse = unknown,
+  TPayload = unknown,
+  TParams = unknown,
+  TError = unknown
+>(
+  url: Endpoint,
+  config: UseCreateUpdateOptions<
+    TRequest,
+    TResponse,
+    TPayload,
+    TParams,
+    TError
+  >,
+  queryClient?: QueryClient
+) => UseCreateUpdateResult<TRequest, TResponse, TPayload, TError>;
 ```
 
 ## Examples

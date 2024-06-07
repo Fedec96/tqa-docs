@@ -1,21 +1,15 @@
 {
   "index": "Overview",
   "getting-started": "Getting started",
-  "--- Hooks": {
-    "type": "separator",
-    "title": "Hooks"
-  },
+  "--- Hooks": { "type": "separator", "title": "Hooks" },
   "retrieve-status": "Retrieve, status",
   "create-update-partial-update": "Create, update, partial update",
   "destroy": "Destroy",
   "alternative-hooks": "Alternative hooks",
-  "--- Advanced": {
-    "type": "separator",
-    "title": "Advanced"
-  },
   "pagination": "Pagination",
-  "typescript": "TypeScript",
+  "--- Advanced": { "type": "separator", "title": "Advanced" },
   "consumer": "Consumer",
+  "typescript": "TypeScript",
   "404": {
     "title": "404",
     "type": "page",

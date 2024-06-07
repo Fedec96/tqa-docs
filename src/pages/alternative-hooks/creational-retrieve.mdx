@@ -12,12 +12,23 @@ To specify which type of request the hook will execute, you need to specify the
 mutation's nature. Doing so will tell TypeScript which method Axios will
 require.
 
-## Usage
+## Definition
 
-```ts filename="TypeScript"
+```ts filename="Import statement (TypeScript)"
 import { useCreationalRetrieve } from "tqa/hooks/crud/alt";
+```
 
-useCreationalRetrieve<Req, Res, Params, Err>(url, opt, client);
+```ts filename="Signature (TypeScript)"
+const useCreationalRetrieve: <
+  TRequest extends UseCreationalRetrieveRequest,
+  TResponse = unknown,
+  TParams = unknown,
+  TError = unknown
+>(
+  url: Endpoint,
+  config: UseCreationalRetrieveOptions<TRequest, TResponse, TParams, TError>,
+  queryClient?: QueryClient
+) => UseCreationalRetrieveResult<TResponse, TError>;
 ```
 
 ## Examples

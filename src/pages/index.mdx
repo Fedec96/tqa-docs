@@ -59,8 +59,10 @@ TQA was built with type safety in mind, ensuring you always know how to interact
 with your data. Each hook offers the ability to fully define your data:
 
 ```ts filename="TypeScript"
-useRetrieve<Req, Res, Params, Err>(url, opt, client);
+useRetrieve<Request, Response, Params, ErrorResponse>(url, config, queryClient);
 ```
+
+[Learn more on TypeScript](/typescript)
 
 ### Request cancellation
 

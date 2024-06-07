@@ -8,12 +8,23 @@ query's nature. Doing so will tell TypeScript which method Axios will require.
 To fire `GET` and `HEAD` requests on demand with mutation-like dynamics, see
 [`useCreationalRetrieve`](/alternative-hooks/creational-retrieve).
 
-## Usage
+## Definition
 
-```ts filename="TypeScript"
+```ts filename="Import statement (TypeScript)"
 import { useRetrieve } from "tqa/hooks/crud";
+```
 
-useRetrieve<Req, Res, Params, Err>(url, opt, client);
+```ts filename="Signature (TypeScript)"
+const useRetrieve: <
+  TRequest extends UseRetrieveRequest = never,
+  TResponse = unknown,
+  TParams = unknown,
+  TError = unknown
+>(
+  url: Endpoint,
+  config: UseRetrieveOptions<TRequest, TResponse, TParams, TError>,
+  queryClient?: QueryClient
+) => UseRetrieveResult<TResponse, TError>;
 ```
 
 ## Examples

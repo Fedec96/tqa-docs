@@ -7,12 +7,23 @@ but specifically for `POST` requests with payload support.
 This hook is designed to accomodate back-ends that require you to query your
 data with `POST` rather than with `GET`.
 
-## Usage
+## Definition
 
-```ts filename="TypeScript"
+```ts filename="Import statement (TypeScript)"
 import { useRetrievalCreate } from "tqa/hooks/crud/alt";
+```
 
-useRetrievalCreate<Res, Data, Params, Err>(url, opt, client);
+```ts filename="Signature (TypeScript)"
+const useRetrievalCreate: <
+  TResponse = unknown,
+  TPayload = unknown,
+  TParams = unknown,
+  TError = unknown
+>(
+  url: Endpoint,
+  config: UseRetrievalCreateOptions<TResponse, TPayload, TParams, TError>,
+  queryClient?: QueryClient
+) => UseRetrievalCreateResult<TResponse, TPayload, TError>;
 ```
 
 ## Example

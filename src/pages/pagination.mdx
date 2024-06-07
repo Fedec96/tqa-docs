@@ -8,10 +8,17 @@ import { Summary } from "@/components/summary";
 
 # Pagination
 
+TQA supports different pagination strategies and approaches, while also
+providing flexible wrapping tools to configure your very own reusable solution.
+
 <Summary
   basePath="pagination"
   anchorPath={[
-    { title: "Pagination setup", href: "pagination-setup", icon: IconSettings },
+    {
+      title: "Pagination configuration",
+      href: "pagination-configuration",
+      icon: IconSettings,
+    },
     { title: "Infinite strategy", href: "infinite-strategy", icon: IconList },
     {
       title: "Directional strategy",
@@ -20,3 +27,52 @@ import { Summary } from "@/components/summary";
     },
   ]}
 />
+
+## Supported strategies
+
+### Infinite
+
+The **infinite** pagination strategy allows the user to perform pagination
+seamlessly while scrolling the records, e.g. by mean of a "load more" button or
+the scrolling action itself. This is considered a modern approach that's widely
+adopted.
+
+### Directional
+
+The **directional** pagination strategy is a more traditional way of preforming
+pagination, by mean of two navigation buttons ("previous" and "next") which will
+allow to display only `n` items at a time.
+
+## Available approaches
+
+### Limit & offset
+
+Many back-ends will allow to perform pagination by mean of the `limit`
+parameter (the amount of items per page) and the `offset` parameter (the
+pagination index, related to how many items per page the user is requesting).
+
+For example, an API based on this approach, upon requesting **10** items per
+page, would work as follows:
+
+- `/api/foo/bar/?limit=10` (implies `offset=0`)
+- `/api/foo/bar/?limit=10&offset=10`
+- `/api/foo/bar/?limit=10&offset=20`
+- `/api/foo/bar/?limit=10&offset=30`
+
+And so on.
+
+### Size & page
+
+A more traditional approach is to provide the ability to specify the number
+of items per page by mean of the `size` parameter, and specify the page's number
+with the `page` parameter.
+
+For example, an API based on this approach, upon requesting **10** items per
+page, would work as follows:
+
+- `/api/foo/bar/?limit=10` (implies `page=0`)
+- `/api/foo/bar/?limit=10&page=1`
+- `/api/foo/bar/?limit=10&page=2`
+- `/api/foo/bar/?limit=10&page=3`
+
+And so on.

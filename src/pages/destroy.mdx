@@ -2,12 +2,18 @@
 
 `useDestroy` allows to perform `DELETE` (destroy) requests.
 
-## Usage
+## Definition
 
-```ts filename="TypeScript"
+```ts filename="Import statement (TypeScript)"
 import { useDestroy } from "tqa/hooks/crud";
+```
 
-useDestroy<Res, Params, Err>(url, opt, client);
+```ts filename="Signature (TypeScript)"
+const useDestroy: <TResponse = unknown, TParams = unknown, TError = unknown>(
+  url: Endpoint,
+  config: UseDestroyOptions<TResponse, TParams, TError>,
+  queryClient?: QueryClient
+) => UseDestroyResult<TResponse, TError>;
 ```
 
 ## Examples

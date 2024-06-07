@@ -20,28 +20,26 @@ const query = useRetrievalCreate<Res, Data, Params, Err>(url, opt, client);
 ```tsx filename="TypeScript (TSX)"
 import { useRetrievalCreate } from "tqa/hooks/crud/alt";
 
+export interface BookProps {
+  id: number;
+}
+
 interface Res {
   id: number;
   title: string;
-  year: number;
+  year?: number;
 }
 
 interface Data {
-  yearInterval: [number, number];
+  includeYearField: boolean;
 }
 
-type Params = void;
-
-interface Err {
-  reason: string;
-}
-
-export const Book = ({ id }: { id: number }) => {
-  const book = useRetrievalCreate<Res, Data, Params, Err>(`/api/book/${id}`, {
+export const Book = ({ id }: BookProps) => {
+  const book = useRetrievalCreate<Res, Data>(`/api/book/${id}`, {
     reactQuery: { queryKey: ["GET_BOOK", id] },
-    axios: { data: { yearInterval: [2010, 2015] } },
+    axios: { data: { includeYearField: true } },
   });
 
-  // ...
+  return book.data && <pre>{JSON.stringify(book.data.response, null, 2)}</pre>;
 };
 ```

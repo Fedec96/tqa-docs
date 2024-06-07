@@ -25,7 +25,12 @@ const mutation = useCreationalRetrieve<Req, Res, Params, Err>(url, opt, client);
 ### Retrieve (`GET`)
 
 ```tsx filename="TypeScript (TSX)"
+import { Fragment } from "react";
 import { useCreationalRetrieve } from "tqa/hooks/crud/alt";
+
+export interface BookProps {
+  id: number;
+}
 
 interface Res {
   id: number;
@@ -33,40 +38,50 @@ interface Res {
   year: number;
 }
 
-type Params = void;
-
-interface Err {
-  reason: string;
-}
-
-export const Book = ({ id }: { id: number }) => {
-  const book = useCreationalRetrieve<"retrieve", Res, Params, Err>(`/api/book/${id}`, {
-    reactQuery: { queryKey: ["GET_BOOK", id] },
+export const Book = ({ id }: BookProps) => {
+  const book = useCreationalRetrieve<"retrieve", Res>(`/api/book/${id}`, {
+    reactQuery: { mutationKey: ["GET_BOOK", id] },
     axios: { method: "get" },
   });
 
-  // ...
+  return (
+    <Fragment>
+      <button onClick={() => void book.mutateAsync()}>Get book</button>
+      {book.data && <pre>{JSON.stringify(book.data.response, null, 2)}</pre>}
+    </Fragment>
+  );
 };
 ```
 
 ### Status (`HEAD`)
 
 ```tsx filename="TypeScript (TSX)"
+import { Fragment } from "react";
 import { useCreationalRetrieve } from "tqa/hooks/crud/alt";
 
-type Res = undefined;
-type Params = void;
-
-interface Err {
-  reason: string;
+export interface OrderProps {
+  id: number;
 }
 
-export const Order = ({ id }: { id: number }) => {
-  const order = useCreationalRetrieve<"status", Res, Params, Err>(`/api/order/${id}`, {
-    reactQuery: { queryKey: ["CHECK_ORDER", id] },
+type Res = undefined;
+
+export const Order = ({ id }: OrderProps) => {
+  const order = useCreationalRetrieve<"status", Res>(`/api/order/${id}`, {
+    reactQuery: { mutationKey: ["CHECK_ORDER", id] },
     axios: { method: "head" },
   });
 
-  // ...
+  return (
+    <Fragment>
+      <button onClick={() => void order.mutateAsync()}>Check order</button>
+
+      <span>
+        Order status:{" "}
+        {order.data?.headers && "status" in order.data.headers
+          ? order.data.headers["status"]
+          : "N/A"}
+      </span>
+    </Fragment>
+  );
 };
 ```

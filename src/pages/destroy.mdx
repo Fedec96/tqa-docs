@@ -17,18 +17,15 @@ const mutation = useDestroy<Res, Params, Err>(url, opt, client);
 ```tsx filename="TypeScript (TSX)"
 import { useDestroy } from "tqa/hooks/crud";
 
-type Res = string;
-type Params = void;
-
-interface Err {
-  reason: string;
+export interface DeleteBookButtonProps {
+  id: number;
 }
 
-export const DeleteBookButton = ({ id }: { id: number }) => {
-  const destroy = useDestroy<Res, Params, Err>(`/api/book/${id}`, {
+export const DeleteBookButton = ({ id }: DeleteBookButtonProps) => {
+  const destroyer = useDestroy(`/api/book/${id}`, {
     reactQuery: { mutationKey: ["DESTROY_BOOK", id] },
   });
 
-  // ...
+  return <button onClick={() => void destroyer.mutateAsync()}>Destroy</button>;
 };
 ```

@@ -34,22 +34,18 @@ interface Res {
 }
 
 type Data = Omit<Res, "id">;
-type Params = void;
-
-interface Err {
-  reason: string;
-}
 
 export const CreateBookButton = () => {
-  const create = useCreateUpdate<"create", Res, Data, Params, Err>(
-    "/api/book/",
-    {
-      reactQuery: { mutationKey: ["CREATE_BOOK"] },
-      axios: { method: "post" },
-    }
-  );
+  const maker = useCreateUpdate<"create", Res, Data>("/api/book/", {
+    reactQuery: { mutationKey: ["CREATE_BOOK"] },
+    axios: { method: "post" },
+  });
 
-  // ...
+  return (
+    <button onClick={() => void maker.mutateAsync({ ... })}>
+      Create
+    </button>
+  );
 };
 ```
 
@@ -58,6 +54,10 @@ export const CreateBookButton = () => {
 ```tsx filename="TypeScript (TSX)"
 import { useCreateUpdate } from "tqa/hooks/crud";
 
+export interface UpdateBookButtonProps {
+  id: number;
+}
+
 interface Res {
   id: number;
   title: string;
@@ -65,22 +65,18 @@ interface Res {
 }
 
 type Data = Omit<Res, "id">;
-type Params = void;
 
-interface Err {
-  reason: string;
-}
+export const UpdateBookButton = ({ id }: UpdateBookButtonProps) => {
+  const updater = useCreateUpdate<"update", Res, Data>(`/api/book/${id}`, {
+    reactQuery: { mutationKey: ["UPDATE_BOOK", id] },
+    axios: { method: "put" },
+  });
 
-export const UpdateBookButton = ({ id }: { id: number }) => {
-  const update = useCreateUpdate<"update", Res, Data, Params, Err>(
-    `/api/book/${id}`,
-    {
-      reactQuery: { mutationKey: ["UPDATE_BOOK", id] },
-      axios: { method: "put" },
-    }
+  return (
+    <button onClick={() => void updater.mutateAsync({ ... })}>
+      Update
+    </button>
   );
-
-  // ...
 };
 ```
 
@@ -89,6 +85,10 @@ export const UpdateBookButton = ({ id }: { id: number }) => {
 ```tsx filename="TypeScript (TSX)"
 import { useCreateUpdate } from "tqa/hooks/crud";
 
+export interface UpdateBookButtonProps {
+  id: number;
+}
+
 interface Res {
   id: number;
   title: string;
@@ -96,22 +96,21 @@ interface Res {
 }
 
 type Data = Omit<Res, "id">;
-type Params = void;
 
-interface Err {
-  reason: string;
-}
-
-export const UpdateBookButton = ({ id }: { id: number }) => {
-  const partial = useCreateUpdate<"partialUpdate", Res, Data, Params, Err>(
+export const UpdateBookButton = ({ id }: UpdateBookButtonProps) => {
+  const updater = useCreateUpdate<"partialUpdate", Res, Data>(
     `/api/book/${id}`,
     {
-      reactQuery: { mutationKey: ["PATCH_BOOK", id] },
+      reactQuery: { mutationKey: ["UPDATE_BOOK", id] },
       axios: { method: "patch" },
     }
   );
 
-  // ...
+  return (
+    <button onClick={() => void updater.mutateAsync({ ... })}>
+      Update
+    </button>
+  );
 };
 ```
 

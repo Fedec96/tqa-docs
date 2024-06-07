@@ -23,25 +23,23 @@ const query = useRetrieve<Req, Res, Params, Err>(url, opt, client);
 ```tsx filename="TypeScript (TSX)"
 import { useRetrieve } from "tqa/hooks/crud";
 
+export interface BookProps {
+  id: number;
+}
+
 interface Res {
   id: number;
   title: string;
   year: number;
 }
 
-type Params = void;
-
-interface Err {
-  reason: string;
-}
-
-export const Book = ({ id }: { id: number }) => {
-  const book = useRetrieve<"retrieve", Res, Params, Err>(`/api/book/${id}`, {
+export const Book = ({ id }: BookProps) => {
+  const book = useRetrieve<"retrieve", Res>(`/api/book/${id}`, {
     reactQuery: { queryKey: ["GET_BOOK", id] },
     axios: { method: "get" },
   });
 
-  // ...
+  return book.data && <pre>{JSON.stringify(book.data.response, null, 2)}</pre>;
 };
 ```
 
@@ -51,28 +49,34 @@ export const Book = ({ id }: { id: number }) => {
 import { useRetrieve } from "tqa/hooks/crud";
 import { useState, useEffect } from "react";
 
-type Res = undefined;
-type Params = void;
-
-interface Err {
-  reason: string;
+export interface OrderProps {
+  id: number;
 }
 
-export const Order = ({ id }: { id: number }) => {
+type Res = undefined;
+
+export const Order = ({ id }: OrderProps) => {
   const [refetchInterval, setRefetchInterval] = useState<number | false>(1_000);
 
-  const order = useRetrieve<"status", Res, Params, Err>(`/api/order/${id}`, {
+  const order = useRetrieve<"status", Res>(`/api/order/${id}`, {
     reactQuery: { queryKey: ["CHECK_ORDER", id], refetchInterval },
     axios: { method: "head" },
   });
 
   useEffect(() => {
-    if (query.data?.response.status === 201 || query.error) {
-      setPolling(false);
+    if (order.data?.status === 201 || order.error) {
+      setRefetchInterval(false);
     }
-  }, [query.data?.response, query.error]);
+  }, [order.data?.status, order.error]);
 
-  // ...
+  return (
+    <span>
+      Order status:{" "}
+      {order.data?.headers && "status" in order.data.headers
+        ? order.data.headers["status"]
+        : "N/A"}
+    </span>
+  );
 };
 ```
 

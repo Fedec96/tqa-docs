@@ -50,12 +50,7 @@ Access more than the bare data when a response is returned:
 ```ts filename="TypeScript"
 const {
   data: { request, response, headers, status, statusText },
-  error
 } = useRetrieve(url, opt, client);
-
-if (error && "isAxiosError" in error) {
-  // ...
-}
 ```
 
 ### Strong type safety
@@ -75,7 +70,7 @@ query function. This work is already covered by TQA under the hood so that
 you only have to interact with `queryClient`:
 
 ```ts filename="TypeScript" copy=false
-queryClient.cancelQueries({ queryKey: [/* ... */] });
+queryClient.cancelQueries({ queryKey: [/* ... */], exact: true });
 ```
 
 This applies to all the `GET` and `HEAD` requests, excluding those that are

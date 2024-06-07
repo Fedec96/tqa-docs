@@ -12,7 +12,7 @@ data with `POST` rather than with `GET`.
 ```ts filename="TypeScript"
 import { useRetrievalCreate } from "tqa/hooks/crud/alt";
 
-const query = useRetrievalCreate<Res, Data, Params, Err>(url, opt, client);
+useRetrievalCreate<Res, Data, Params, Err>(url, opt, client);
 ```
 
 ## Example

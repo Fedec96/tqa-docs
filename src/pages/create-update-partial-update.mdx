@@ -17,7 +17,7 @@ To request with `POST` behaving like [`useRetrieve`](/retrieve-status), see
 ```ts filename="TypeScript"
 import { useCreateUpdate } from "tqa/hooks/crud";
 
-const mutation = useCreateUpdate<Req, Res, Data, Params, Err>(url, opt, client);
+useCreateUpdate<Req, Res, Data, Params, Err>(url, opt, client);
 ```
 
 ## Examples
@@ -42,7 +42,7 @@ export const CreateBookButton = () => {
   });
 
   return (
-    <button onClick={() => void maker.mutateAsync({ ... })}>
+    <button onClick={() => void maker.mutateAsync({ /* ... */ })}>
       Create
     </button>
   );
@@ -73,7 +73,7 @@ export const UpdateBookButton = ({ id }: UpdateBookButtonProps) => {
   });
 
   return (
-    <button onClick={() => void updater.mutateAsync({ ... })}>
+    <button onClick={() => void updater.mutateAsync({ /* ... */ })}>
       Update
     </button>
   );
@@ -107,7 +107,7 @@ export const UpdateBookButton = ({ id }: UpdateBookButtonProps) => {
   );
 
   return (
-    <button onClick={() => void updater.mutateAsync({ ... })}>
+    <button onClick={() => void updater.mutateAsync({ /* ... */ })}>
       Update
     </button>
   );

@@ -1,1 +1,48 @@
+import { Callout } from "nextra/components";
+
 # Pagination configuration
+
+When you [provide a consumer to TQA's context](/getting-started#quick-start),
+the consumer will apply the default pagination settings unless specified
+otherwise.
+
+[Learn more on consumer](/consumer)
+
+## Available settings
+
+All the settings are optional and will use the default value if not provided.
+
+```tsx filename="./src/app/providers.tsx" {4-10}
+// ...
+
+const consumer = new Consumer(http, {
+  pagination: {
+    itemsPerPage: 10,
+    limitParam: "limit",
+    offsetParam: "offset",
+    initialPageParam: 0,
+    sendZeroOffset: false,
+  },
+});
+```
+
+<Callout type="info">
+  The above example uses the default values.
+</Callout>
+
+### Definition
+
+```ts filename="TypeScript" copy=false
+interface PaginationParams {
+  /** The number of items per page, i.e. limit. */
+  itemsPerPage: Limit;
+  /** The limit parameter's name. */
+  limitParam: string;
+  /** The offset's parameter name. */
+  offsetParam: string;
+  /** The intial page parameter. */
+  initialPageParam: Offset;
+  /** Whether to include the offset parameter when the value is `0`. */
+  sendZeroOffset: boolean;
+}
+```

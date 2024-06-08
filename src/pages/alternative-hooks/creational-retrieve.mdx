@@ -20,15 +20,15 @@ import { useCreationalRetrieve } from "tqa/hooks/crud/alt";
 
 ```ts filename="Signature (TypeScript)"
 const useCreationalRetrieve: <
-  TRequest extends UseCreationalRetrieveRequest,
-  TResponse = unknown,
-  TParams = unknown,
-  TError = unknown
+  Req extends UseCreationalRetrieveRequest,
+  Res = unknown,
+  Params = unknown,
+  Err = unknown
 >(
   url: Endpoint,
-  config: UseCreationalRetrieveOptions<TRequest, TResponse, TParams, TError>,
+  config: UseCreationalRetrieveOptions<Req, Res, Params, Err>,
   queryClient?: QueryClient
-) => UseCreationalRetrieveResult<TResponse, TError>;
+) => UseCreationalRetrieveResult<Res, Err>;
 ```
 
 ## Examples
@@ -86,12 +86,12 @@ export const Order = ({ id }: OrderProps) => {
     <Fragment>
       <button onClick={() => void order.mutateAsync()}>Check order</button>
 
-      <span>
+      <p>
         Order status:{" "}
         {order.data?.headers && "status" in order.data.headers
           ? order.data.headers["status"]
           : "N/A"}
-      </span>
+      </p>
     </Fragment>
   );
 };

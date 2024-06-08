@@ -9,11 +9,11 @@ import { useDestroy } from "tqa/hooks/crud";
 ```
 
 ```ts filename="Signature (TypeScript)"
-const useDestroy: <TResponse = unknown, TParams = unknown, TError = unknown>(
+const useDestroy: <Res = unknown, Params = unknown, Err = unknown>(
   url: Endpoint,
-  config: UseDestroyOptions<TResponse, TParams, TError>,
+  config: UseDestroyOptions<Res, Params, Err>,
   queryClient?: QueryClient
-) => UseDestroyResult<TResponse, TError>;
+) => UseDestroyResult<Res, Err>;
 ```
 
 ## Examples

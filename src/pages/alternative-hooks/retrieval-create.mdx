@@ -15,15 +15,15 @@ import { useRetrievalCreate } from "tqa/hooks/crud/alt";
 
 ```ts filename="Signature (TypeScript)"
 const useRetrievalCreate: <
-  TResponse = unknown,
-  TPayload = unknown,
-  TParams = unknown,
-  TError = unknown
+  Res = unknown,
+  Data = unknown,
+  Params = unknown,
+  Err = unknown
 >(
   url: Endpoint,
-  config: UseRetrievalCreateOptions<TResponse, TPayload, TParams, TError>,
+  config: UseRetrievalCreateOptions<Res, Data, Params, Err>,
   queryClient?: QueryClient
-) => UseRetrievalCreateResult<TResponse, TPayload, TError>;
+) => UseRetrievalCreateResult<Res, Data, Err>;
 ```
 
 ## Example

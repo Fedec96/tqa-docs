@@ -20,22 +20,16 @@ import { useCreateUpdate } from "tqa/hooks/crud";
 
 ```ts filename="Signature (TypeScript)"
 const useCreateUpdate: <
-  TRequest extends UseCreateUpdateRequest = never,
-  TResponse = unknown,
-  TPayload = unknown,
-  TParams = unknown,
-  TError = unknown
+  Req extends UseCreateUpdateRequest = never,
+  Res = unknown,
+  Data = unknown,
+  Params = unknown,
+  Err = unknown
 >(
   url: Endpoint,
-  config: UseCreateUpdateOptions<
-    TRequest,
-    TResponse,
-    TPayload,
-    TParams,
-    TError
-  >,
+  config: UseCreateUpdateOptions<Req, Res, Data, Params, Err>,
   queryClient?: QueryClient
-) => UseCreateUpdateResult<TRequest, TResponse, TPayload, TError>;
+) => UseCreateUpdateResult<Req, Res, Data, Err>;
 ```
 
 ## Examples

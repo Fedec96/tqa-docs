@@ -54,12 +54,10 @@ pagination index, related to how many items per page the user is requesting).
 For example, an API based on this approach, upon requesting **10** items per
 page, would work as follows:
 
-- `/api/foo/bar/?limit=10` (implies `offset=0`)
+- `/api/foo/bar/?limit=10&offset=0`
 - `/api/foo/bar/?limit=10&offset=10`
 - `/api/foo/bar/?limit=10&offset=20`
-- `/api/foo/bar/?limit=10&offset=30`
-
-And so on.
+- `...`
 
 ### Size & page
 
@@ -70,9 +68,7 @@ with the `page` parameter.
 For example, an API based on this approach, upon requesting **10** items per
 page, would work as follows:
 
-- `/api/foo/bar/?limit=10` (implies `page=0`)
+- `/api/foo/bar/?limit=10&page=0`
 - `/api/foo/bar/?limit=10&page=1`
 - `/api/foo/bar/?limit=10&page=2`
-- `/api/foo/bar/?limit=10&page=3`
-
-And so on.
+- `...`

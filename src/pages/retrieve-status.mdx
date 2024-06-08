@@ -16,15 +16,15 @@ import { useRetrieve } from "tqa/hooks/crud";
 
 ```ts filename="Signature (TypeScript)"
 const useRetrieve: <
-  TRequest extends UseRetrieveRequest = never,
-  TResponse = unknown,
-  TParams = unknown,
-  TError = unknown
+  Req extends UseRetrieveRequest = never,
+  Res = unknown,
+  Params = unknown,
+  Err = unknown
 >(
   url: Endpoint,
-  config: UseRetrieveOptions<TRequest, TResponse, TParams, TError>,
+  config: UseRetrieveOptions<Req, Res, Params, Err>,
   queryClient?: QueryClient
-) => UseRetrieveResult<TResponse, TError>;
+) => UseRetrieveResult<Res, Err>;
 ```
 
 ## Examples
@@ -85,12 +85,12 @@ export const Order = ({ id }: OrderProps) => {
   }, [order.data?.status, order.error]);
 
   return (
-    <span>
+    <p>
       Order status:{" "}
       {order.data?.headers && "status" in order.data.headers
         ? order.data.headers["status"]
         : "N/A"}
-    </span>
+    </p>
   );
 };
 ```

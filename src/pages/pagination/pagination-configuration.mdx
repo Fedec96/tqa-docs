@@ -8,19 +8,24 @@ otherwise.
 
 [Learn more on consumer](/consumer)
 
-## Available settings
+## Settings
 
 All the settings are optional and will use the default value if not provided.
 
-```tsx filename="./src/app/providers.tsx" {4-10}
+```tsx filename="./src/app/providers.tsx" {4-14}
 // ...
 
 const consumer = new Consumer(http, {
   pagination: {
+    /** The number of items per page, i.e. limit. */
     itemsPerPage: 10,
+    /** The limit parameter's name. */
     limitParam: "limit",
+    /** The offset's parameter name. */
     offsetParam: "offset",
+    /** The intial page parameter. */
     initialPageParam: 0,
+    /** Whether to include the offset parameter when the value is `0`. */
     sendZeroOffset: false,
   },
 });
@@ -30,19 +35,23 @@ const consumer = new Consumer(http, {
   The above example uses the default values.
 </Callout>
 
-### Definition
+## Example
 
-```ts filename="TypeScript" copy=false
-interface PaginationParams {
-  /** The number of items per page, i.e. limit. */
-  itemsPerPage: Limit;
-  /** The limit parameter's name. */
-  limitParam: string;
-  /** The offset's parameter name. */
-  offsetParam: string;
-  /** The intial page parameter. */
-  initialPageParam: Offset;
-  /** Whether to include the offset parameter when the value is `0`. */
-  sendZeroOffset: boolean;
-}
-```
+<Callout type="info">
+  The examples below are formulated with the [limit & offset](/pagination#limit--offset)
+  approach in mind. The queries will depend on which hook you'll be using.
+</Callout>
+
+Given the configuration above, the queries would fire as:
+
+- `/api/foo/bar/?limit=10`
+- `/api/foo/bar/?limit=10&offset=10`
+- `/api/foo/bar/?limit=10&offset=20`
+- `...`
+
+With `sendZeroOffset` set to `true`:
+
+- `/api/foo/bar/?limit=10&offset=0`
+- `/api/foo/bar/?limit=10&offset=10`
+- `/api/foo/bar/?limit=10&offset=20`
+- `...`

@@ -50,7 +50,15 @@ Access more than the bare data when a response is returned:
 ```ts filename="TypeScript"
 const {
   data: { request, response, headers, status, statusText },
-} = useRetrieve(url, opt, client);
+} = useRetrieve<"retrieve", R>(url, opt, client);
+
+interface RichResponse<R> {
+  response: R;
+  headers: AxiosResponseHeaders | RawAxiosResponseHeaders;
+  status: number;
+  statusText: string;
+  request: XMLHttpRequest;
+}
 ```
 
 ### Strong type safety

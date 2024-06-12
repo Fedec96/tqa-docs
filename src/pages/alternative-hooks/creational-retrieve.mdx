@@ -6,7 +6,7 @@ mutation dynamics. This means you can expect it behaving just like
 and `HEAD` requests with no payload.
 
 This hook is designed to accomodate the need of firing your retrieval requests
-on demand (such as upon a click on a button).
+on demand (such as when a button is clicked).
 
 To specify which type of request the hook will execute, you need to specify the
 mutation's nature. Doing so will tell TypeScript which method Axios will
@@ -20,7 +20,7 @@ import { useCreationalRetrieve } from "tqa/hooks/crud/alt";
 
 ```ts filename="Signature (TypeScript)" copy=false
 const useCreationalRetrieve: <
-  Req extends UseCreationalRetrieveRequest,
+  Req extends UseCreationalRetrieveRequest = never,
   Res = unknown,
   Params = unknown,
   Err = unknown

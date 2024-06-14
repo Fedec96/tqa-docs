@@ -1,1 +1,291 @@
+import { Callout } from "nextra/components";
+
 # Infinite strategy
+
+`useInfiniteRetrieve` allows to perform [infinite pagination](/pagination#infinite)
+by offering a way to configure how it returns values based on the current
+response and state.
+
+The infinite pagination is available with `GET` method & query parameters and
+`POST` method & payload.
+
+## Definition
+
+### For `GET` requests
+
+```ts filename="Import statement (TypeScript)"
+import { useInfiniteRetrieve } from "tqa/hooks/pagination";
+```
+
+```ts filename="Signature (TypeScript)" copy=false
+const useInfiniteRetrieve: <Res = unknown, Params = unknown, Err = unknown>(
+  url: string | URL,
+  config: UseInfiniteRetrieveOptions<Res, Params, Err>,
+  queryClient?: QueryClient
+) => UseInfiniteRetrieveResult<Res, Err>;
+```
+
+### For `POST` requests
+
+```ts filename="Import statement (TypeScript)"
+import { useInfiniteCreate } from "tqa/hooks/pagination/alt";
+```
+
+```ts filename="Signature (TypeScript)" copy=false
+const useInfiniteCreate: <
+  Res = unknown,
+  Data = unknown,
+  Params = unknown,
+  Err = unknown
+>(
+  url: string | URL,
+  config: UseInfiniteCreateOptions<Res, Data, Params, Err>,
+  queryClient?: QueryClient
+) => UseInfiniteCreateResult<Res, Data, Err>;
+```
+
+## Configuration
+
+Besides the objects used for Axios and TanStack Query, the hook expects an
+additional one which is specifically used by TQA:
+
+```ts filename="TypeScript" copy=false
+interface InfiniteConfig<Res> {
+  /**
+   * Returns the list of results.
+   * @param response The response.
+   * @returns The array containing the results.
+   */
+  getResults: <Res>(response: Res) => unknown[] | readonly unknown[];
+
+  /**
+   * Returns the total number of results.
+   * @param response The response.
+   * @returns The field containing the number.
+   */
+  getTotal: <Res>(response: Res) => number;
+}
+```
+
+## Output
+
+The hook exposes specific state managed by TQA to offer more tools to improve
+your UX/UI:
+
+```ts filename="TypeScript" copy=false
+interface InfiniteResult {
+  /** Sets the current limit (items per page). */
+  setLimit: React.Dispatch<React.SetStateAction<number>>;
+
+  /**
+   * Sets the current limit (items per page) to the consumer's initial limit
+   * parameter.
+   */
+  resetLimit: () => void;
+
+  /** The total number of returned records. */
+  totalRecords: number | null;
+
+  /** The number of currently fetched records. */
+  totalFetched: number | null;
+}
+```
+
+## Examples
+
+### Limit & offset
+
+If you're intracting with a back-end that paginates with the [limit & offset](/pagination#limit--offset)
+approach, you can consider a solution like the following:
+
+```tsx filename="TypeScript (TSX)"
+import { Fragment } from "react";
+import { useInfiniteRetrieve } from "tqa/hooks/pagination";
+
+interface Book {
+  id: number;
+  title: string;
+}
+
+interface Pagination<T = unknown> {
+  results: T[];
+  total: number;
+  currentIndex: number;
+}
+
+type Res = Pagination<Book>;
+
+export const BooksView = () => {
+  const pagination = useInfiniteRetrieve<Res>("/api/book", {
+    reactQuery: {
+      queryKey: ["ALL_BOOKS"],
+
+      getNextPageParam: ({ response }) => {
+        const nextOffset = response.currentIndex + response.results.length;
+        return nextOffset >= response.total ? undefined : nextOffset;
+      },
+    },
+
+    tqa: {
+      getResults: (res) => res.results,
+      getTotal: (res) => res.total,
+    },
+  });
+
+  return (
+    <Fragment>
+      {pagination.data?.pages.map((page) =>
+        page.response.results.map((book) => <p key={book.id}>{book.title}</p>)
+      )}
+
+      {pagination.hasNextPage && (
+        <button onClick={() => void pagination.fetchNextPage()}>More</button>
+      )}
+    </Fragment>
+  );
+};
+```
+
+### Size & page
+
+If you're intracting with a back-end that paginates with the [size & page](/pagination#size--page)
+approach, you can consider a solution like the following:
+
+```tsx filename="TypeScript (TSX)"
+import { Fragment } from "react";
+import { useInfiniteRetrieve } from "tqa/hooks/pagination";
+
+interface Book {
+  id: number;
+  title: string;
+}
+
+interface Pagination<T = unknown> {
+  results: T[];
+  total: number;
+  pagesCount: number;
+}
+
+type Res = Pagination<Book>;
+
+export const BooksView = () => {
+  const pagination = useInfiniteRetrieve<Res>("/api/book", {
+    reactQuery: {
+      queryKey: ["ALL_BOOKS"],
+
+      getNextPageParam: ({ response }, pages) => {
+        const currentPage = pages.length - 1;
+
+        return currentPage < response.pagesCount - 1
+          ? currentPage + 1
+          : undefined;
+      },
+    },
+
+    tqa: {
+      getResults: (res) => res.results,
+      getTotal: (res) => res.total,
+    },
+  });
+
+  return (
+    <Fragment>
+      {pagination.data?.pages.map((page) =>
+        page.response.results.map((book) => <p key={book.id}>{book.title}</p>)
+      )}
+
+      {pagination.hasNextPage && (
+        <button onClick={() => void pagination.fetchNextPage()}>More</button>
+      )}
+    </Fragment>
+  );
+};
+```
+
+### What about `POST`?
+
+Regardless of the approach you're using, the solutions described for the `GET`
+requests are exactly equal for `POST`. Simply import `useInfiniteCreate` and
+call that instead ([see the definition](#for-post-requests)).
+
+## Custom wrapper
+
+If you don't want to repeat the hook's configuration over and over again, you
+can create a custom hook and use the `UseInfiniteRetrieveFactory` type:
+
+```ts filename="TypeScript"
+import {
+  useInfiniteRetrieve,
+  type UseInfiniteRetrieveFactory,
+  type UseInfiniteRetrieveResult,
+} from "tqa/hooks/pagination";
+
+import type { Endpoint } from "tqa";
+
+interface Pagination<T = unknown> {
+  results: T[];
+  total: number;
+  currentIndex: number;
+}
+
+export const useInfinitePagination = <
+  Res = unknown,
+  Params = unknown,
+  Err = unknown
+>(
+  url: Endpoint,
+  config: UseInfiniteRetrieveFactory<Pagination<Res>, Params, Err>
+): UseInfiniteRetrieveResult<Pagination<Res>, Err> =>
+  useInfiniteRetrieve<Pagination<Res>, Params, Err>(url, {
+    tqa: {
+      getResults: (res) => res.results,
+      getTotal: (res) => res.total,
+    },
+
+    ...config,
+
+    reactQuery: {
+      getNextPageParam: ({ response }) => {
+        const nextOffset = response.currentIndex + response.results.length;
+        return nextOffset >= response.total ? undefined : nextOffset;
+      },
+
+      ...config.reactQuery,
+    },
+  });
+```
+
+Then, use it as follows:
+
+```tsx filename="TypeScript (TSX)"
+import { Fragment } from "react";
+import { useInfinitePagination } from "../hooks/use-infinite-pagination";
+
+interface Res {
+  id: number;
+  title: string;
+}
+
+export const BooksView = () => {
+  const pagination = useInfinitePagination<Res>("/api/book", {
+    reactQuery: { queryKey: ["ALL_BOOKS"] },
+  });
+
+  return (
+    <Fragment>
+      {pagination.data?.pages.map((page) =>
+        page.response.results.map((book) => <p key={book.id}>{book.title}</p>)
+      )}
+
+      {pagination.hasNextPage && (
+        <button onClick={() => void pagination.fetchNextPage()}>More</button>
+      )}
+    </Fragment>
+  );
+};
+```
+
+<Callout>
+  The same concept illustrated above applies to `useInfiniteCreate` by mean of
+  the `useInfiniteCreateFactory` type.
+</Callout>

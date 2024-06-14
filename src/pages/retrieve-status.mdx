@@ -79,10 +79,10 @@ export const Order = ({ id }: OrderProps) => {
   });
 
   useEffect(() => {
-    if (order.data?.status === 201 || order.error) {
+    if (order.data?.status === 201 || order.isError) {
       setRefetchInterval(false);
     }
-  }, [order.data?.status, order.error]);
+  }, [order.data?.status, order.isError]);
 
   return (
     <p>

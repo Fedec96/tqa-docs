@@ -12,6 +12,11 @@ The infinite pagination is available with `GET` method & query parameters and
 
 ### For `GET` requests
 
+<Callout>
+  Since requests with this hook [can be canceled](#cancel-requests), it is not
+  possible to pass a custom abort controller's signal to Axios.
+</Callout>
+
 ```ts filename="Import statement (TypeScript)"
 import { useInfiniteRetrieve } from "tqa/hooks/pagination";
 ```
@@ -284,7 +289,17 @@ export const BooksView = () => {
 };
 ```
 
-<Callout>
+<Callout type="info">
   The same concept illustrated above applies to `useInfiniteCreate` by mean of
   the `useInfiniteCreateFactory` type.
 </Callout>
+
+## Cancel requests
+
+<Callout>
+  Requests can be canceled only if using the `GET` method.
+</Callout>
+
+```tsx filename="TypeScript"
+queryClient.cancelQueries({ queryKey: [/* ... */], exact: true });
+```

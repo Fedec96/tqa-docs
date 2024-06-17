@@ -1,3 +1,5 @@
+import { Callout } from "nextra/components";
+
 # Retrieve, status
 
 `useRetrieve` allows to perform `GET` (retrieve) and `HEAD` (status) requests.
@@ -7,6 +9,11 @@ query's nature. Doing so will tell TypeScript which method Axios will require.
 
 To fire `GET` and `HEAD` requests on demand with mutation-like dynamics, see
 [`useCreationalRetrieve`](/alternative-hooks/creational-retrieve).
+
+<Callout>
+  Since requests with this hook [can be canceled](#cancel-requests), it is not
+  possible to pass a custom abort controller's signal to Axios.
+</Callout>
 
 ## Definition
 

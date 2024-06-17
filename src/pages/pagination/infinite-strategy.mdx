@@ -2,9 +2,8 @@ import { Callout } from "nextra/components";
 
 # Infinite strategy
 
-`useInfiniteRetrieve` allows to perform [infinite pagination](/pagination#infinite)
-by offering a way to configure how it returns values based on the current
-response and state.
+`useInfiniteRetrieve` and `useInfiniteCreate` allow to perform
+[infinite pagination](/pagination#infinite).
 
 The infinite pagination is available with `GET` method & query parameters and
 `POST` method & payload.
@@ -211,7 +210,7 @@ call that instead ([see the definition](#for-post-requests)).
 ## Custom wrapper
 
 If you don't want to repeat the hook's configuration over and over again, you
-can create a custom hook and use the `UseInfiniteRetrieveFactory` type:
+can create a custom hook by using the `UseInfiniteRetrieveFactory` type:
 
 ```ts filename="TypeScript"
 import {

@@ -88,7 +88,7 @@ export const Order = ({ id }: OrderProps) => {
     <p>
       Order status:{" "}
       {order.data?.headers && "status" in order.data.headers
-        ? order.data.headers["status"]
+        ? order.data.headers.status
         : "N/A"}
     </p>
   );

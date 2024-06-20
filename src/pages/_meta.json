@@ -1,13 +1,14 @@
 {
   "index": "Overview",
   "getting-started": "Getting started",
-  "consumer": "Consumer",
   "--- Hooks": { "type": "separator", "title": "Hooks" },
   "retrieve-status": "Retrieve, status",
   "create-update-partial-update": "Create, update, partial update",
   "destroy": "Destroy",
   "alternative-hooks": "Alternative hooks",
   "pagination": "Pagination",
+  "--- Advanced": { "type": "separator", "title": "Advanced" },
+  "consumer": "Consumer",
   "404": {
     "title": "404",
     "type": "page",

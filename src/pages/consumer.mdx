@@ -1,1 +1,53 @@
+import { Callout } from "nextra/components";
+
 # Consumer
+
+The consumer is the Axios instance that is used by default to perform HTTP
+requests, [provided to TQA's context](/getting-started#quick-start).
+
+If you need to use another consumer, or use the default one but with custom
+options for specific use cases, you can use the configuration at hook-level.
+
+## Examples
+
+### Using a generic consumer
+
+If you want to use a generic Axios instance, for example when you need to
+interact with a different back-end, you can pass the `external` option:
+
+```ts filename="TypeScript"
+useRetrieve<"retrieve">("...", {
+  // ...
+  consumer: { external: true },
+});
+```
+
+### Using a configured, different consumer
+
+If you have a fully configured Axios instance that differs from the default you
+provided to TQA's context, you can feed it to your hook:
+
+```ts filename="TypeScript"
+const http = axios.create({ baseURL: "..." });
+
+useRetrieve<"retrieve">("...", {
+  // ...
+  consumer: { instance: http },
+});
+```
+
+### Customizing the consumer's options
+
+You can also pass custom options regardless of the consumer you're using. This
+works for any consumer you tell the hook to use:
+
+```ts filename="TypeScript"
+useRetrieve<"retrieve">("...", {
+  // ...
+  consumer: { options: { pagination: { itemsPerPage: 5 } } },
+});
+```
+
+<Callout>
+  The options you omit will be automatically set to the defaults.
+</Callout>

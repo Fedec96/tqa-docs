@@ -20,7 +20,7 @@ const useRetrievalCreate: <
   Params = unknown,
   Err = unknown
 >(
-  url: string | URL,
+  url: Endpoint,
   config: UseRetrievalCreateOptions<Res, Data, Params, Err>,
   queryClient?: QueryClient
 ) => UseRetrievalCreateResult<Res, Data, Err>;

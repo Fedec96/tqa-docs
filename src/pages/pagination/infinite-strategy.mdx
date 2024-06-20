@@ -23,7 +23,7 @@ import { useInfiniteRetrieve } from "tqa/hooks/pagination";
 
 ```ts filename="Signature (TypeScript)" copy=false
 const useInfiniteRetrieve: <Res = unknown, Params = unknown, Err = unknown>(
-  url: string | URL,
+  url: Endpoint,
   config: UseInfiniteRetrieveOptions<Res, Params, Err>,
   queryClient?: QueryClient
 ) => UseInfiniteRetrieveResult<Res, Err>;
@@ -42,7 +42,7 @@ const useInfiniteCreate: <
   Params = unknown,
   Err = unknown
 >(
-  url: string | URL,
+  url: Endpoint,
   config: UseInfiniteCreateOptions<Res, Data, Params, Err>,
   queryClient?: QueryClient
 ) => UseInfiniteCreateResult<Res, Data, Err>;
@@ -131,8 +131,8 @@ export const BooksView = () => {
     },
 
     tqa: {
-      getResults: (res) => res.results,
-      getTotal: (res) => res.total,
+      getResults: ({ results }) => results,
+      getTotal: ({ total }) => total,
     },
   });
 
@@ -187,8 +187,8 @@ export const BooksView = () => {
     },
 
     tqa: {
-      getResults: (res) => res.results,
-      getTotal: (res) => res.total,
+      getResults: ({ results }) => results,
+      getTotal: ({ total }) => total,
     },
   });
 
@@ -242,8 +242,8 @@ export const useInfinitePagination = <
 ): UseInfiniteRetrieveResult<Pagination<Res>, Err> =>
   useInfiniteRetrieve<Pagination<Res>, Params, Err>(url, {
     tqa: {
-      getResults: (res) => res.results,
-      getTotal: (res) => res.total,
+      getResults: ({ results }) => results,
+      getTotal: ({ total }) => total,
     },
 
     ...config,

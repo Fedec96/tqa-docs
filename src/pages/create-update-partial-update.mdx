@@ -26,7 +26,7 @@ const useCreateUpdate: <
   Params = unknown,
   Err = unknown
 >(
-  url: string | URL,
+  url: Endpoint,
   config: UseCreateUpdateOptions<Req, Res, Data, Params, Err>,
   queryClient?: QueryClient
 ) => UseCreateUpdateResult<Req, Res, Data, Err>;

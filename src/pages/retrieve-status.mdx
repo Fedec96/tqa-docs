@@ -28,7 +28,7 @@ const useRetrieve: <
   Params = unknown,
   Err = unknown
 >(
-  url: string | URL,
+  url: Endpoint,
   config: UseRetrieveOptions<Req, Res, Params, Err>,
   queryClient?: QueryClient
 ) => UseRetrieveResult<Res, Err>;

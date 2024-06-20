@@ -1,1 +1,448 @@
+import { Callout } from "nextra/components";
+
 # Directional strategy
+
+`useDirectionalRetrieve` and `useDirectionalCreate` allow to perform
+[directional pagination](/pagination#directional).
+
+The directional pagination is available with `GET` method & query parameters and
+`POST` method & payload.
+
+## Definition
+
+### For `GET` requests
+
+<Callout>
+  Since requests with this hook [can be canceled](#cancel-requests), it is not
+  possible to pass a custom abort controller's signal to Axios.
+</Callout>
+
+```ts filename="Import statement (TypeScript)"
+import { useDirectionalRetrieve } from "tqa/hooks/pagination";
+```
+
+```ts filename="Signature (TypeScript)" copy=false
+const useDirectionalRetrieve: <Res = unknown, Params = unknown, Err = unknown>(
+  url: Endpoint,
+  config: UseDirectionalRetrieveOptions<Res, Params, Err>,
+  queryClient?: QueryClient
+) => UseDirectionalRetrieveResult<Res, Err>;
+```
+
+### For `POST` requests
+
+```ts filename="Import statement (TypeScript)"
+import { useDirectionalCreate } from "tqa/hooks/pagination/alt";
+```
+
+```ts filename="Signature (TypeScript)" copy=false
+const useDirectionalCreate: <
+  Res = unknown,
+  Data = unknown,
+  Params = unknown,
+  Err = unknown
+>(
+  url: Endpoint,
+  config: UseDirectionalCreateOptions<Res, Data, Params, Err>,
+  queryClient?: QueryClient
+) => UseDirectionalCreateResult<Res, Data, Err>;
+```
+
+## Configuration
+
+Besides the objects used for Axios and TanStack Query, the hook expects an
+additional one which is specifically used by TQA:
+
+```ts filename="TypeScript" copy=false
+interface DirectionalConfig<Res> {
+  /**
+   * Determines the previous page's offset.
+   * @param response The most recent response.
+   * @param limit The current limit.
+   * @param offset The current offset (items per page).
+   * @param hasPreviousPage Whether backwards pagination is possible.
+   * @param hasNextPage Whether forwards pagination is possible.
+   * @returns The new offset parameter if available.
+   */
+  getPreviousOffset: (
+    response: Res,
+    limit: number,
+    offset: number,
+    hasPreviousPage: boolean,
+    hasNextPage: boolean
+  ) => number | undefined;
+
+  /**
+   * Determines the next page's offset.
+   * @param response The most recent response.
+   * @param limit The current limit.
+   * @param offset The current offset (items per page).
+   * @param hasPreviousPage Whether backwards pagination is possible.
+   * @param hasNextPage Whether forwards pagination is possible.
+   * @returns The new offset parameter if available.
+   */
+  getNextOffset: (
+    response: Res,
+    limit: number,
+    offset: number,
+    hasPreviousPage: boolean,
+    hasNextPage: boolean
+  ) => number | undefined;
+
+  /**
+   * Determines whether backwards pagination is possible.
+   * @param response The most recent response.
+   * @param limit The current limit.
+   * @param offset The current offset (items per page).
+   * @returns Whether a previous page is available.
+   */
+  hasPreviousPage: (response: Res, limit: number, offset: number) => boolean;
+
+  /**
+   * Determines whether forwards pagination is possible.
+   * @param response The most recent response.
+   * @param limit The current limit.
+   * @param offset The current offset (items per page).
+   * @returns Whether a subsequent page is available.
+   */
+  hasNextPage: (response: Res, limit: number, offset: number) => boolean;
+}
+```
+
+The above configuration can be extended with two more functions that must be
+either both provided or completely omitted:
+
+```ts filename="TypeScript" copy=false
+interface DirectionalConfig<Res> {
+  // ...
+
+  /**
+   * Determines the current offset's start index.
+   * @param response The most recent response.
+   * @param limit The current limit.
+   * @param offset The current offset (items per page).
+   * @param hasPreviousPage Whether backwards pagination is possible.
+   * @param hasNextPage Whether forwards pagination is possible.
+   * @returns The current offset's start index.
+   */
+  getIntervalFrom: (
+    response: Res,
+    limit: number,
+    offset: number,
+    hasPreviousPage: boolean,
+    hasNextPage: boolean
+  ) => number;
+
+  /**
+   * Determines the current offset's end index.
+   * @param response The most recent response.
+   * @param limit The current limit.
+   * @param offset The current offset (items per page).
+   * @param hasPreviousPage Whether backwards pagination is possible.
+   * @param hasNextPage Whether forwards pagination is possible.
+   * @returns The current offset's end index.
+   */
+  getIntervalTo: (
+    response: Res,
+    limit: number,
+    offset: number,
+    hasPreviousPage: boolean,
+    hasNextPage: boolean
+  ) => number;
+}
+```
+
+## Output
+
+The hook exposes specific state managed by TQA to offer more tools to improve
+your UX/UI:
+
+```ts filename="TypeScript" copy=false
+interface DirectionalResult {
+  /** Represents the currently viewed offset (from-to), if configured. */
+  interval?: { from: number; to: number };
+
+  /** Whether backwards pagination is possible. */
+  hasPreviousPage: boolean;
+
+  /** Whether forward pagination is possible. */
+  hasNextPage: boolean;
+
+  /** Fetches the previous page, if available and not already fetching. */
+  fetchPreviousPage: () => void;
+
+  /** Fetches the next page, if available and not already fetching. */
+  fetchNextPage: () => void;
+
+  /** Sets the current limit (items per page). */
+  setLimit: React.Dispatch<React.SetStateAction<number>>;
+
+  /** Sets the current offset. */
+  setOffset: React.Dispatch<React.SetStateAction<number>>;
+
+  /**
+   * Sets the current limit (items per page) to the consumer's initial limit
+   * parameter.
+   */
+  resetLimit: () => void;
+
+  /** Sets the current offset to the consumer's initial page parameter. */
+  resetOffset: () => void;
+}
+```
+
+## Examples
+
+### Limit & offset
+
+If you're intracting with a back-end that paginates with the [limit & offset](/pagination#limit--offset)
+approach, you can consider a solution like the following:
+
+```tsx filename="TypeScript (TSX)"
+import { Fragment } from "react";
+import { useDirectionalRetrieve } from "tqa/hooks/pagination";
+
+interface Book {
+  id: number;
+  title: string;
+}
+
+interface Pagination<T = unknown> {
+  results: T[];
+  total: number;
+  currentIndex: number;
+}
+
+type Res = Pagination<Book>;
+
+export const BooksView = () => {
+  const pagination = useDirectionalRetrieve<Res>("/api/book", {
+    reactQuery: { queryKey: ["ALL_BOOKS"] },
+
+    tqa: {
+      hasPreviousPage: ({ currentIndex }, limit) => currentIndex - limit >= 0,
+
+      hasNextPage: ({ results, total, currentIndex }) =>
+        currentIndex + results.length < total,
+
+      getPreviousOffset: ({ currentIndex }, limit) => {
+        const prevOffset = currentIndex - limit;
+        return prevOffset >= 0 ? prevOffset : undefined;
+      },
+
+      getNextOffset: ({ results, total, currentIndex }) => {
+        const nextOffset = currentIndex + results.length;
+        return nextOffset < total ? nextOffset : undefined;
+      },
+
+      getIntervalFrom: ({ total, currentIndex }) =>
+        total ? currentIndex + 1 : 0,
+
+      getIntervalTo: ({ results, currentIndex }) =>
+        currentIndex + results.length,
+    },
+  });
+
+  return (
+    <Fragment>
+      {pagination.data?.response.results.map((book) => (
+        <p key={book.id}>{book.title}</p>
+      ))}
+
+      {pagination.tqa.hasPreviousPage && (
+        <button onClick={() => pagination.tqa.fetchPreviousPage()}>
+          Previous
+        </button>
+      )}
+
+      {pagination.tqa.hasNextPage && (
+        <button onClick={() => pagination.tqa.fetchNextPage()}>Next</button>
+      )}
+    </Fragment>
+  );
+};
+```
+
+### Size & page
+
+If you're intracting with a back-end that paginates with the [size & page](/pagination#size--page)
+approach, you can consider a solution like the following:
+
+```tsx filename="TypeScript (TSX)"
+import { Fragment } from "react";
+import { useDirectionalRetrieve } from "tqa/hooks/pagination";
+
+interface Book {
+  id: number;
+  title: string;
+}
+
+interface Pagination<T = unknown> {
+  results: T[];
+  total: number;
+  pagesCount: number;
+}
+
+type Res = Pagination<Book>;
+
+export const BooksView = () => {
+  const pagination = useDirectionalRetrieve<Res>("/api/book", {
+    reactQuery: { queryKey: ["ALL_BOOKS"] },
+
+    tqa: {
+      hasPreviousPage: (_res, _limit, offset) => offset > 0,
+      hasNextPage: ({ pagesCount }, _limit, offset) => offset < pagesCount - 1,
+
+      getPreviousOffset: (_res, _limit, offset) =>
+        offset ? offset - 1 : undefined,
+
+      getNextOffset: ({ pagesCount }, _limit, offset) =>
+        offset < pagesCount - 1 ? offset + 1 : undefined,
+
+      getIntervalFrom: (_res, limit, offset) => offset * limit + 1,
+
+      getIntervalTo: ({ total }, limit, offset) =>
+        Math.min((offset + 1) * limit, total),
+    },
+  });
+
+  return (
+    <Fragment>
+      {pagination.data?.response.results.map((book) => (
+        <p key={book.id}>{book.title}</p>
+      ))}
+
+      {pagination.tqa.hasPreviousPage && (
+        <button onClick={() => pagination.tqa.fetchPreviousPage()}>
+          Previous
+        </button>
+      )}
+
+      {pagination.tqa.hasNextPage && (
+        <button onClick={() => pagination.tqa.fetchNextPage()}>Next</button>
+      )}
+    </Fragment>
+  );
+};
+```
+
+### What about `POST`?
+
+Regardless of the approach you're using, the solutions described for the `GET`
+requests are exactly equal for `POST`. Simply import `useDirectionalCreate` and
+call that instead ([see the definition](#for-post-requests)).
+
+## Custom wrapper
+
+If you don't want to repeat the hook's configuration over and over again, you
+can create a custom hook by using the `UseDirectionalRetrieveFactory` type:
+
+```ts filename="TypeScript"
+import { keepPreviousData } from "@tanstack/react-query";
+
+import {
+  useDirectionalRetrieve,
+  type UseDirectionalRetrieveFactory,
+  type UseDirectionalRetrieveResult,
+} from "tqa/hooks/pagination";
+
+import type { Endpoint } from "tqa";
+
+interface Pagination<T = unknown> {
+  results: T[];
+  total: number;
+  currentIndex: number;
+}
+
+export const useDirectionalPagination = <
+  Res = unknown,
+  Params = unknown,
+  Err = unknown
+>(
+  url: Endpoint,
+  config: UseDirectionalRetrieveFactory<Pagination<Res>, Params, Err>
+): UseDirectionalRetrieveResult<Pagination<Res>, Err> =>
+  useDirectionalRetrieve<Pagination<Res>, Params, Err>(url, {
+    tqa: {
+      hasPreviousPage: ({ currentIndex }, limit) => currentIndex - limit >= 0,
+
+      hasNextPage: ({ results, total, currentIndex }) =>
+        currentIndex + results.length < total,
+
+      getPreviousOffset: ({ currentIndex }, limit) => {
+        const prevOffset = currentIndex - limit;
+        return prevOffset >= 0 ? prevOffset : undefined;
+      },
+
+      getNextOffset: ({ results, total, currentIndex }) => {
+        const nextOffset = currentIndex + results.length;
+        return nextOffset < total ? nextOffset : undefined;
+      },
+
+      getIntervalFrom: ({ total, currentIndex }) =>
+        total ? currentIndex + 1 : 0,
+
+      getIntervalTo: ({ results, currentIndex }) =>
+        currentIndex + results.length,
+    },
+
+    ...config,
+
+    reactQuery: {
+      // Highly recommended
+      placeholderData: keepPreviousData,
+      ...config.reactQuery,
+    },
+  });
+```
+
+Then, use it as follows:
+
+```tsx filename="TypeScript (TSX)"
+import { Fragment } from "react";
+import { useDirectionalPagination } from "../hooks/use-directional-pagination";
+
+interface Res {
+  id: number;
+  title: string;
+}
+
+export const BooksView = () => {
+  const pagination = useDirectionalPagination<Res>("/api/book", {
+    reactQuery: { queryKey: ["ALL_BOOKS"] },
+  });
+
+  return (
+    <Fragment>
+      {pagination.data?.response.results.map((book) => (
+        <p key={book.id}>{book.title}</p>
+      ))}
+
+      {pagination.tqa.hasPreviousPage && (
+        <button onClick={() => pagination.tqa.fetchPreviousPage()}>
+          Previous
+        </button>
+      )}
+
+      {pagination.tqa.hasNextPage && (
+        <button onClick={() => pagination.tqa.fetchNextPage()}>Next</button>
+      )}
+    </Fragment>
+  );
+};
+```
+
+<Callout type="info">
+  The same concept illustrated above applies to `useDirectionalCreate` by mean
+  of the `useDirectionalCreateFactory` type.
+</Callout>
+
+## Cancel requests
+
+<Callout>
+  Requests can be canceled only if using the `GET` method.
+</Callout>
+
+```tsx filename="TypeScript"
+queryClient.cancelQueries({ queryKey: [/* ... */], exact: true });
+```

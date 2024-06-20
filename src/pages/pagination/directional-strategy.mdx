@@ -201,6 +201,7 @@ approach, you can consider a solution like the following:
 ```tsx filename="TypeScript (TSX)"
 import { Fragment } from "react";
 import { useDirectionalRetrieve } from "tqa/hooks/pagination";
+import { keepPreviousData } from "@tanstack/react-query";
 
 interface Book {
   id: number;
@@ -217,7 +218,10 @@ type Res = Pagination<Book>;
 
 export const BooksView = () => {
   const pagination = useDirectionalRetrieve<Res>("/api/book", {
-    reactQuery: { queryKey: ["ALL_BOOKS"] },
+    reactQuery: {
+      queryKey: ["ALL_BOOKS"],
+      placeholderData: keepPreviousData,
+    },
 
     tqa: {
       hasPreviousPage: ({ currentIndex }, limit) => currentIndex - limit >= 0,
@@ -271,6 +275,7 @@ approach, you can consider a solution like the following:
 ```tsx filename="TypeScript (TSX)"
 import { Fragment } from "react";
 import { useDirectionalRetrieve } from "tqa/hooks/pagination";
+import { keepPreviousData } from "@tanstack/react-query";
 
 interface Book {
   id: number;
@@ -287,7 +292,10 @@ type Res = Pagination<Book>;
 
 export const BooksView = () => {
   const pagination = useDirectionalRetrieve<Res>("/api/book", {
-    reactQuery: { queryKey: ["ALL_BOOKS"] },
+    reactQuery: {
+      queryKey: ["ALL_BOOKS"],
+      placeholderData: keepPreviousData,
+    },
 
     tqa: {
       hasPreviousPage: (_res, _limit, offset) => offset > 0,
@@ -389,7 +397,6 @@ export const useDirectionalPagination = <
     ...config,
 
     reactQuery: {
-      // Highly recommended
       placeholderData: keepPreviousData,
       ...config.reactQuery,
     },

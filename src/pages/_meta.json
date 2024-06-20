@@ -1,7 +1,6 @@
 {
   "index": "Overview",
   "getting-started": "Getting started",
-  "typescript": "TypeScript",
   "consumer": "Consumer",
   "--- Hooks": { "type": "separator", "title": "Hooks" },
   "retrieve-status": "Retrieve, status",
